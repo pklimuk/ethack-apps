@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Button } from './DemoComponents';
 import { PoolData } from '../api/pools/route';
 
 export default function ROICalculator() {
@@ -61,23 +60,23 @@ export default function ROICalculator() {
 
   const results = calculateReturns();
 
-  const generateChartData = () => {
-    if (!results) return [];
+  // const generateChartData = () => {
+  //   if (!results) return [];
     
-    const data = [];
-    const days = Math.min(timeframe, 365); // Limit chart to 1 year max
-    const dailyGrowthRate = Math.pow(results.finalAmount / results.principal, 1 / timeframe);
+  //   const data = [];
+  //   const days = Math.min(timeframe, 365); // Limit chart to 1 year max
+  //   const dailyGrowthRate = Math.pow(results.finalAmount / results.principal, 1 / timeframe);
     
-    for (let day = 0; day <= days; day += Math.max(1, Math.floor(days / 50))) {
-      const amount = results.principal * Math.pow(dailyGrowthRate, day);
-      data.push({ day, amount });
-    }
+  //   for (let day = 0; day <= days; day += Math.max(1, Math.floor(days / 50))) {
+  //     const amount = results.principal * Math.pow(dailyGrowthRate, day);
+  //     data.push({ day, amount });
+  //   }
     
-    return data;
-  };
+  //   return data;
+  // };
 
-  const chartData = generateChartData();
-  const maxAmount = chartData.length > 0 ? Math.max(...chartData.map(d => d.amount)) : 0;
+  // const chartData = generateChartData();
+  // const maxAmount = chartData.length > 0 ? Math.max(...chartData.map(d => d.amount)) : 0;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
