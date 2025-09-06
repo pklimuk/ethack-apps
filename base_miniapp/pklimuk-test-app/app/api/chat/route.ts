@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Papa from 'papaparse';
 import OpenAI from 'openai';
+import { PoolData } from '../pools/route';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -72,19 +73,19 @@ export async function POST(request: NextRequest) {
       console.error('CSV parsing errors:', parsed.errors);
     }
 
-    const pools = parsed.data as any[];
+    const pools = parsed.data as PoolData[];
 
     // Create a summary of the data for context (to stay within token limits)
     const totalPools = pools.length;
-    const uniqueChains = [...new Set(pools.map((p: any) => p.chain))].filter(Boolean);
-    const uniqueProjects = [...new Set(pools.map((p: any) => p.project))].filter(Boolean);
+    const uniqueChains = [...new Set(pools.map((p: PoolData) => p.chain))].filter(Boolean);
+    const uniqueProjects = [...new Set(pools.map((p: PoolData) => p.project))].filter(Boolean);
     
     // Get top 10 pools by TVL for context
     const topPoolsByTVL = pools
-      .filter((p: any) => p.tvlUsd && !isNaN(parseFloat(p.tvlUsd)))
-      .sort((a: any, b: any) => parseFloat(b.tvlUsd) - parseFloat(a.tvlUsd))
+      .filter((p: PoolData) => p.tvlUsd && !isNaN(Number(p.tvlUsd)))
+      .sort((a: PoolData, b: PoolData) => Number(b.tvlUsd) - Number(a.tvlUsd))
       .slice(0, 10)
-      .map((p: any) => ({
+      .map((p: PoolData) => ({
         chain: p.chain,
         project: p.project,
         symbol: p.symbol,
@@ -95,10 +96,10 @@ export async function POST(request: NextRequest) {
 
     // Get top 10 pools by APY for context
     const topPoolsByAPY = pools
-      .filter((p: any) => p.apy && !isNaN(parseFloat(p.apy)))
-      .sort((a: any, b: any) => parseFloat(b.apy) - parseFloat(a.apy))
+      .filter((p: PoolData) => p.apy && !isNaN(Number(p.apy)))
+      .sort((a: PoolData, b: PoolData) => Number(b.apy) - Number(a.apy))
       .slice(0, 10)
-      .map((p: any) => ({
+      .map((p: PoolData) => ({
         chain: p.chain,
         project: p.project,
         symbol: p.symbol,
@@ -116,10 +117,10 @@ Dataset Overview:
 - Data includes: TVL (Total Value Locked), APY rates, chain info, stablecoin status, volume data, etc.
 
 Sample Top Pools by TVL:
-${topPoolsByTVL.map(p => `- ${p.project} ${p.symbol} on ${p.chain}: $${parseFloat(p.tvlUsd).toLocaleString()} TVL, ${p.apy}% APY`).join('\n')}
+${topPoolsByTVL.map(p => `- ${p.project} ${p.symbol} on ${p.chain}: $${Number(p.tvlUsd).toLocaleString()} TVL, ${p.apy}% APY`).join('\n')}
 
 Sample Top Pools by APY:
-${topPoolsByAPY.map(p => `- ${p.project} ${p.symbol} on ${p.chain}: ${p.apy}% APY, $${parseFloat(p.tvlUsd).toLocaleString()} TVL`).join('\n')}
+${topPoolsByAPY.map(p => `- ${p.project} ${p.symbol} on ${p.chain}: ${p.apy}% APY, $${Number(p.tvlUsd).toLocaleString()} TVL`).join('\n')}
 
 Available data fields: chain, project, symbol, tvlUsd, apyBase, apyReward, apy, stablecoin, ilRisk, exposure, volumeUsd1d, volumeUsd7d, and more.
 
