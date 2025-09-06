@@ -79,9 +79,9 @@ export default function PoolsComparison({ selectedPools, onClose }: PoolsCompari
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h3 className="text-lg font-medium text-gray-900">
-          Pool Comparison ({selectedPools.length} pools)
+      <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <h3 className="text-base md:text-lg font-medium text-gray-900">
+          Pool Comparison ({selectedPools.length})
         </h3>
         <button
           onClick={onClose}
@@ -93,52 +93,93 @@ export default function PoolsComparison({ selectedPools, onClose }: PoolsCompari
         </button>
       </div>
 
-      {/* Comparison Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Metric
-              </th>
-              {selectedPools.map((pool) => (
-                <th key={pool.pool} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <div className="space-y-1">
-                    <div className="font-semibold text-gray-900">{pool.symbol}</div>
-                    <div className="text-xs text-gray-500">{pool.project}</div>
-                    <div className="text-xs">
-                      <span className="px-2 py-1 bg-gray-100 rounded-md">{pool.chain}</span>
-                    </div>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {comparisonFields.map(field => (
-              <tr key={field.key} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {field.label}
-                </td>
-                {selectedPools.map(pool => {
+      {/* Mobile Card Layout */}
+      <div className="lg:hidden">
+        <div className="p-4 space-y-4">
+          {selectedPools.map((pool, poolIndex) => (
+            <div key={pool.pool} className="border border-gray-200 rounded-lg">
+              {/* Pool Header */}
+              <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 rounded-t-lg">
+                <h4 className="font-semibold text-gray-900">{pool.symbol}</h4>
+                <p className="text-sm text-gray-600">{pool.project}</p>
+                <span className="inline-block mt-1 px-2 py-1 bg-gray-100 rounded-md text-xs">
+                  {pool.chain}
+                </span>
+              </div>
+              
+              {/* Pool Metrics */}
+              <div className="p-4 space-y-3">
+                {comparisonFields.map(field => {
                   const value = pool[field.key as keyof PoolData];
                   const formattedValue = field.format(value);
                   const cellStyle = getCellStyle(field.key, value, selectedPools);
+                  const isBest = cellStyle.includes('bg-green-50');
                   
                   return (
-                    <td key={`${pool.pool}-${field.key}`} className={`px-6 py-4 whitespace-nowrap text-sm ${cellStyle}`}>
-                      {formattedValue}
-                    </td>
+                    <div key={field.key} className="flex justify-between items-center py-1">
+                      <span className="text-sm text-gray-600">{field.label}:</span>
+                      <span className={`text-sm font-medium ${
+                        isBest ? 'text-green-800 bg-green-50 px-2 py-1 rounded' : 'text-gray-900'
+                      }`}>
+                        {isBest && '🏆 '}{formattedValue}
+                      </span>
+                    </div>
                   );
                 })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop Table Layout */}
+      <div className="hidden lg:block">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Metric
+                </th>
+                {selectedPools.map((pool) => (
+                  <th key={pool.pool} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="space-y-1">
+                      <div className="font-semibold text-gray-900">{pool.symbol}</div>
+                      <div className="text-xs text-gray-500">{pool.project}</div>
+                      <div className="text-xs">
+                        <span className="px-2 py-1 bg-gray-100 rounded-md">{pool.chain}</span>
+                      </div>
+                    </div>
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {comparisonFields.map(field => (
+                <tr key={field.key} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {field.label}
+                  </td>
+                  {selectedPools.map(pool => {
+                    const value = pool[field.key as keyof PoolData];
+                    const formattedValue = field.format(value);
+                    const cellStyle = getCellStyle(field.key, value, selectedPools);
+                    
+                    return (
+                      <td key={`${pool.pool}-${field.key}`} className={`px-6 py-4 whitespace-nowrap text-sm ${cellStyle}`}>
+                        {formattedValue}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Summary Stats */}
-      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+      <div className="px-4 md:px-6 py-4 bg-gray-50 border-t border-gray-200">
         <h4 className="text-sm font-medium text-gray-900 mb-3">Summary Statistics</h4>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-3 rounded-md border border-gray-200">
@@ -163,11 +204,12 @@ export default function PoolsComparison({ selectedPools, onClose }: PoolsCompari
       </div>
 
       {/* Legend */}
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+      <div className="px-4 md:px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1">
             <div className="w-3 h-3 bg-green-50 border border-green-200 rounded"></div>
-            <span>Best value in category</span>
+            <span className="hidden sm:inline">Best value in category</span>
+            <span className="sm:hidden">Best value 🏆</span>
           </div>
         </div>
       </div>
