@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Button } from './DemoComponents';
 import { PoolData } from '../api/pools/route';
 
 export default function ROICalculator() {
@@ -77,7 +76,7 @@ export default function ROICalculator() {
   };
 
   const chartData = generateChartData();
-  const maxAmount = chartData.length > 0 ? Math.max(...chartData.map(d => d.amount)) : 0;
+  // const maxAmount = chartData.length > 0 ? Math.max(...chartData.map(d => d.amount)) : 0;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

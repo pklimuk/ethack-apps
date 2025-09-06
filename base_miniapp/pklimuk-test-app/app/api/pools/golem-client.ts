@@ -73,7 +73,7 @@ async function initializeGolemClient(): Promise<GolemBaseClient | null> {
   }
 }
 
-function convertBackToOriginalValues(data: any): PoolData {
+function convertBackToOriginalValues(data: PoolData): PoolData {
   return {
     chain: data.chain || '',
     project: data.project || '',
