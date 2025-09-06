@@ -96,7 +96,7 @@ export default function PoolsComparison({ selectedPools, onClose }: PoolsCompari
       {/* Mobile Card Layout */}
       <div className="lg:hidden">
         <div className="p-4 space-y-4">
-          {selectedPools.map((pool, poolIndex) => (
+          {selectedPools.map((pool) => (
             <div key={pool.pool} className="border border-gray-200 rounded-lg">
               {/* Pool Header */}
               <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 rounded-t-lg">
