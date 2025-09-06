@@ -105,15 +105,24 @@ class DeFiPoolCRUD {
             new golem_base_sdk_1.Annotation("tvlUsd", Math.round(poolData.tvlUsd * 100)), // Store as cents
             new golem_base_sdk_1.Annotation("created_timestamp", Math.floor(Date.now() / 1000)),
         ];
-        // Add optional numeric annotations
-        if (poolData.apyBase !== undefined && poolData.apyBase !== null) {
-            numericAnnotations.push(new golem_base_sdk_1.Annotation("apyBase", Math.round(poolData.apyBase * 10000))); // Store as basis points
+        // Add optional numeric annotations (skip zero/negative values to avoid RLP encoding issues)
+        if (poolData.apyBase !== undefined && poolData.apyBase !== null && poolData.apyBase > 0) {
+            const apyBaseValue = Math.round(poolData.apyBase * 10000);
+            if (apyBaseValue > 0) {
+                numericAnnotations.push(new golem_base_sdk_1.Annotation("apyBase", apyBaseValue)); // Store as basis points
+            }
         }
-        if (poolData.apyReward !== undefined && poolData.apyReward !== null) {
-            numericAnnotations.push(new golem_base_sdk_1.Annotation("apyReward", Math.round(poolData.apyReward * 10000)));
+        if (poolData.apyReward !== undefined && poolData.apyReward !== null && poolData.apyReward > 0) {
+            const apyRewardValue = Math.round(poolData.apyReward * 10000);
+            if (apyRewardValue > 0) {
+                numericAnnotations.push(new golem_base_sdk_1.Annotation("apyReward", apyRewardValue));
+            }
         }
-        if (poolData.apy !== undefined && poolData.apy !== null) {
-            numericAnnotations.push(new golem_base_sdk_1.Annotation("apy", Math.round(poolData.apy * 10000)));
+        if (poolData.apy !== undefined && poolData.apy !== null && poolData.apy > 0) {
+            const apyValue = Math.round(poolData.apy * 10000);
+            if (apyValue > 0) {
+                numericAnnotations.push(new golem_base_sdk_1.Annotation("apy", apyValue));
+            }
         }
         if (poolData.volumeUsd1d !== undefined && poolData.volumeUsd1d !== null) {
             numericAnnotations.push(new golem_base_sdk_1.Annotation("volumeUsd1d", Math.round(poolData.volumeUsd1d * 100)));
@@ -124,11 +133,11 @@ class DeFiPoolCRUD {
         if (poolData.count !== undefined && poolData.count !== null) {
             numericAnnotations.push(new golem_base_sdk_1.Annotation("count", poolData.count));
         }
-        if (poolData.stablecoin !== undefined && poolData.stablecoin !== null) {
-            numericAnnotations.push(new golem_base_sdk_1.Annotation("stablecoin", poolData.stablecoin ? 1 : 0));
+        if (poolData.stablecoin !== undefined && poolData.stablecoin !== null && poolData.stablecoin) {
+            numericAnnotations.push(new golem_base_sdk_1.Annotation("stablecoin", 1)); // Only add if true
         }
-        if (poolData.outlier !== undefined && poolData.outlier !== null) {
-            numericAnnotations.push(new golem_base_sdk_1.Annotation("outlier", poolData.outlier ? 1 : 0));
+        if (poolData.outlier !== undefined && poolData.outlier !== null && poolData.outlier) {
+            numericAnnotations.push(new golem_base_sdk_1.Annotation("outlier", 1)); // Only add if true
         }
         // Create entity
         const entity = {
@@ -179,14 +188,23 @@ class DeFiPoolCRUD {
                     new golem_base_sdk_1.Annotation("tvlUsd", Math.round(poolData.tvlUsd * 100)),
                     new golem_base_sdk_1.Annotation("created_timestamp", Math.floor(Date.now() / 1000)),
                 ];
-                if (poolData.apyBase !== undefined && poolData.apyBase !== null) {
-                    numericAnnotations.push(new golem_base_sdk_1.Annotation("apyBase", Math.round(poolData.apyBase * 10000)));
+                if (poolData.apyBase !== undefined && poolData.apyBase !== null && poolData.apyBase > 0) {
+                    const apyBaseValue = Math.round(poolData.apyBase * 10000);
+                    if (apyBaseValue > 0) {
+                        numericAnnotations.push(new golem_base_sdk_1.Annotation("apyBase", apyBaseValue));
+                    }
                 }
-                if (poolData.apyReward !== undefined && poolData.apyReward !== null) {
-                    numericAnnotations.push(new golem_base_sdk_1.Annotation("apyReward", Math.round(poolData.apyReward * 10000)));
+                if (poolData.apyReward !== undefined && poolData.apyReward !== null && poolData.apyReward > 0) {
+                    const apyRewardValue = Math.round(poolData.apyReward * 10000);
+                    if (apyRewardValue > 0) {
+                        numericAnnotations.push(new golem_base_sdk_1.Annotation("apyReward", apyRewardValue));
+                    }
                 }
-                if (poolData.apy !== undefined && poolData.apy !== null) {
-                    numericAnnotations.push(new golem_base_sdk_1.Annotation("apy", Math.round(poolData.apy * 10000)));
+                if (poolData.apy !== undefined && poolData.apy !== null && poolData.apy > 0) {
+                    const apyValue = Math.round(poolData.apy * 10000);
+                    if (apyValue > 0) {
+                        numericAnnotations.push(new golem_base_sdk_1.Annotation("apy", apyValue));
+                    }
                 }
                 if (poolData.volumeUsd1d !== undefined && poolData.volumeUsd1d !== null) {
                     numericAnnotations.push(new golem_base_sdk_1.Annotation("volumeUsd1d", Math.round(poolData.volumeUsd1d * 100)));
@@ -197,11 +215,11 @@ class DeFiPoolCRUD {
                 if (poolData.count !== undefined && poolData.count !== null) {
                     numericAnnotations.push(new golem_base_sdk_1.Annotation("count", poolData.count));
                 }
-                if (poolData.stablecoin !== undefined && poolData.stablecoin !== null) {
-                    numericAnnotations.push(new golem_base_sdk_1.Annotation("stablecoin", poolData.stablecoin ? 1 : 0));
+                if (poolData.stablecoin !== undefined && poolData.stablecoin !== null && poolData.stablecoin) {
+                    numericAnnotations.push(new golem_base_sdk_1.Annotation("stablecoin", 1)); // Only add if true
                 }
-                if (poolData.outlier !== undefined && poolData.outlier !== null) {
-                    numericAnnotations.push(new golem_base_sdk_1.Annotation("outlier", poolData.outlier ? 1 : 0));
+                if (poolData.outlier !== undefined && poolData.outlier !== null && poolData.outlier) {
+                    numericAnnotations.push(new golem_base_sdk_1.Annotation("outlier", 1)); // Only add if true
                 }
                 const entity = {
                     data: new TextEncoder().encode(JSON.stringify(entityData)),
@@ -320,13 +338,13 @@ class DeFiPoolCRUD {
             new golem_base_sdk_1.Annotation("tvlUsd", Math.round(mergedPool.tvlUsd * 100)),
             new golem_base_sdk_1.Annotation("updated_timestamp", Math.floor(Date.now() / 1000)),
         ];
-        if (mergedPool.apyBase !== undefined && mergedPool.apyBase !== null) {
+        if (mergedPool.apyBase !== undefined && mergedPool.apyBase !== null && mergedPool.apyBase > 0) {
             numericAnnotations.push(new golem_base_sdk_1.Annotation("apyBase", Math.round(mergedPool.apyBase * 10000)));
         }
-        if (mergedPool.apyReward !== undefined && mergedPool.apyReward !== null) {
+        if (mergedPool.apyReward !== undefined && mergedPool.apyReward !== null && mergedPool.apyReward > 0) {
             numericAnnotations.push(new golem_base_sdk_1.Annotation("apyReward", Math.round(mergedPool.apyReward * 10000)));
         }
-        if (mergedPool.apy !== undefined && mergedPool.apy !== null) {
+        if (mergedPool.apy !== undefined && mergedPool.apy !== null && mergedPool.apy > 0) {
             numericAnnotations.push(new golem_base_sdk_1.Annotation("apy", Math.round(mergedPool.apy * 10000)));
         }
         if (mergedPool.volumeUsd1d !== undefined && mergedPool.volumeUsd1d !== null) {
@@ -462,10 +480,19 @@ async function exampleCreatePools() {
     console.log("Loading pools from CSV...");
     const poolsData = loadPoolsFromCsv("defi_llama_pools_by_tvl.csv");
     console.log(`Loaded ${poolsData.length} pools`);
-    // Create first 20 pools as example
-    const samplePools = poolsData.slice(0, 20);
-    const entityKeys = await crud.createPoolsBatch(samplePools, 5);
-    console.log(`Created ${entityKeys.length} pools`);
+    // Create all pools from CSV data with only essential fields
+    const simplifiedPools = poolsData.map(pool => ({
+        chain: pool.chain,
+        project: pool.project,
+        symbol: pool.symbol,
+        tvlUsd: pool.tvlUsd,
+        apy: pool.apy,
+        stablecoin: pool.stablecoin,
+        // Only keep essential fields to avoid transaction size limits
+    }));
+    console.log(`Creating ${simplifiedPools.length} pools one at a time...`);
+    const entityKeys = await crud.createPoolsBatch(simplifiedPools, 1); // Process one at a time
+    console.log(`Created ${entityKeys.length} pools total`);
     return entityKeys;
 }
 /**
@@ -553,10 +580,10 @@ async function main() {
             transport: "websocket",
         });
         // Example usage - uncomment the operations you want to run
-        // await exampleCreatePools();
+        await exampleCreatePools();
         // await exampleQueryPools();
         // await exampleUpdatePool();
-        await exampleCleanup();
+        // await exampleCleanup();
         // Stop watching events
         unsubscribe();
         console.log("Complete!");
