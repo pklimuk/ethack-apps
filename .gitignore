@@ -237,3 +237,7 @@ __marimo__/
 scraper/exports/
 .DS_Store
 *.csv
+
+
+# node
+golemdb-integration/node_modules/
