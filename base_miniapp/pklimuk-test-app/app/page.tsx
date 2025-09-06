@@ -1,13 +1,12 @@
 "use client";
 
 import {
-  useMiniKit,
   useAddFrame,
+  useMiniKit,
   useOpenUrl,
 } from "@coinbase/onchainkit/minikit";
-import { useEffect, useMemo, useState, useCallback } from "react";
-import { Button } from "./components/DemoComponents";
-import { Icon } from "./components/DemoComponents";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, Icon } from "./components/DemoComponents";
 import PoolsDashboard from "./components/PoolsDashboard";
 
 export default function App() {
@@ -58,13 +57,12 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       <div className="w-full max-w-7xl mx-auto px-4 py-4">
-        <header className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
-          <div>
-            <h1 className="text-xl font-semibold text-gray-900">DeFi Pools Dashboard</h1>
-            <p className="text-sm text-gray-600">Powered by MiniKit & DeFi Llama</p>
-          </div>
+        {/* <header className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200"> */}
+          {/* <div>
+            <h1 className="text-xl font-semibold text-gray-900">DeFi Pools Monitoring</h1>
+          </div> */}
           <div>{saveFrameButton}</div>
-        </header>
+        {/* </header> */}
 
         <main className="flex-1">
           <PoolsDashboard />

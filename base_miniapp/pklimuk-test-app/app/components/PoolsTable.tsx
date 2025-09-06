@@ -151,41 +151,6 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
           </span>
         ),
       }),
-      columnHelper.accessor('apyBase', {
-        header: 'Base APY',
-        cell: info => (
-          <span className="font-mono text-gray-600">
-            {formatPercent(info.getValue())}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('apyReward', {
-        header: 'Reward APY',
-        cell: info => (
-          <span className="font-mono text-purple-600">
-            {formatPercent(info.getValue())}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('stablecoin', {
-        header: 'Stablecoin',
-        cell: info => (
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            info.getValue() ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-          }`}>
-            {info.getValue() ? 'Yes' : 'No'}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('ilRisk', {
-        header: 'IL Risk',
-        cell: info => {
-          const risk = info.getValue();
-          const colorClass = risk === 'no' ? 'text-green-600' : 
-                           risk === 'low' ? 'text-yellow-600' : 'text-red-600';
-          return <span className={`font-medium ${colorClass}`}>{risk}</span>;
-        },
-      }),
     ],
     [data, selectedRows, maxSelection, onSelectionChange]
   );

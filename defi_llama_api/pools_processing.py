@@ -14,6 +14,9 @@ if __name__ == "__main__":
             ]
         )
     ]
+    data = data.loc[
+        data["stablecoin"]
+    ]
 
     data = data.dropna(subset="tvlUsd")
     data = data.sort_values("tvlUsd", ascending=False)
