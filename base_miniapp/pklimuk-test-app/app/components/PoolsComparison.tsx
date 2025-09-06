@@ -32,26 +32,32 @@ export default function PoolsComparison({ selectedPools, onClose }: PoolsCompari
     return `${num.toFixed(2)}%`;
   };
 
-  const comparisonFields = [
-    { key: 'chain', label: 'Chain', format: (val: string) => val || '-' },
-    { key: 'project', label: 'Project', format: (val: string) => val || '-' },
-    { key: 'symbol', label: 'Symbol', format: (val: string) => val || '-' },
-    { key: 'tvlUsd', label: 'TVL (USD)', format: formatNumber },
-    { key: 'apy', label: 'Total APY', format: formatPercent },
-    { key: 'apyBase', label: 'Base APY', format: formatPercent },
-    { key: 'apyReward', label: 'Reward APY', format: formatPercent },
-    { key: 'apyPct1D', label: 'APY Change (1D)', format: formatPercent },
-    { key: 'apyPct7D', label: 'APY Change (7D)', format: formatPercent },
-    { key: 'apyPct30D', label: 'APY Change (30D)', format: formatPercent },
-    { key: 'stablecoin', label: 'Stablecoin', format: (val: boolean) => val ? 'Yes' : 'No' },
-    { key: 'ilRisk', label: 'IL Risk', format: (val: string) => val || '-' },
-    { key: 'exposure', label: 'Exposure', format: (val: string) => val || '-' },
-    { key: 'volumeUsd1d', label: 'Volume (1D)', format: formatNumber },
-    { key: 'volumeUsd7d', label: 'Volume (7D)', format: formatNumber },
-    { key: 'mu', label: 'Mu (μ)', format: (val: number) => val ? val.toFixed(4) : '-' },
-    { key: 'sigma', label: 'Sigma (σ)', format: (val: number) => val ? val.toFixed(4) : '-' },
-    { key: 'count', label: 'Count', format: (val: number) => val ? val.toString() : '-' },
-    { key: 'outlier', label: 'Outlier', format: (val: boolean) => val ? 'Yes' : 'No' },
+  type ComparisonField = {
+    key: keyof PoolData;
+    label: string;
+    format: (val: unknown) => string;
+  };
+
+  const comparisonFields: ComparisonField[] = [
+    { key: 'chain', label: 'Chain', format: (val: unknown) => (val as string) || '-' },
+    { key: 'project', label: 'Project', format: (val: unknown) => (val as string) || '-' },
+    { key: 'symbol', label: 'Symbol', format: (val: unknown) => (val as string) || '-' },
+    { key: 'tvlUsd', label: 'TVL (USD)', format: (val: unknown) => formatNumber(val as number) },
+    { key: 'apy', label: 'Total APY', format: (val: unknown) => formatPercent(val as number) },
+    { key: 'apyBase', label: 'Base APY', format: (val: unknown) => formatPercent(val as number) },
+    { key: 'apyReward', label: 'Reward APY', format: (val: unknown) => formatPercent(val as number) },
+    { key: 'apyPct1D', label: 'APY Change (1D)', format: (val: unknown) => formatPercent(val as number) },
+    { key: 'apyPct7D', label: 'APY Change (7D)', format: (val: unknown) => formatPercent(val as number) },
+    { key: 'apyPct30D', label: 'APY Change (30D)', format: (val: unknown) => formatPercent(val as number) },
+    { key: 'stablecoin', label: 'Stablecoin', format: (val: unknown) => (val as boolean) ? 'Yes' : 'No' },
+    { key: 'ilRisk', label: 'IL Risk', format: (val: unknown) => (val as string) || '-' },
+    { key: 'exposure', label: 'Exposure', format: (val: unknown) => (val as string) || '-' },
+    { key: 'volumeUsd1d', label: 'Volume (1D)', format: (val: unknown) => formatNumber(val as number) },
+    { key: 'volumeUsd7d', label: 'Volume (7D)', format: (val: unknown) => formatNumber(val as number) },
+    { key: 'mu', label: 'Mu (μ)', format: (val: unknown) => (val as number) ? (val as number).toFixed(4) : '-' },
+    { key: 'sigma', label: 'Sigma (σ)', format: (val: unknown) => (val as number) ? (val as number).toFixed(4) : '-' },
+    { key: 'count', label: 'Count', format: (val: unknown) => (val as number) ? (val as number).toString() : '-' },
+    { key: 'outlier', label: 'Outlier', format: (val: unknown) => (val as boolean) ? 'Yes' : 'No' },
   ];
 
   const getBestValue = (field: string, pools: PoolData[]) => {

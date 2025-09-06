@@ -57,12 +57,14 @@ export async function GET(request: NextRequest) {
         const numericFields = ['tvlUsd', 'apyBase', 'apyReward', 'apy', 'apyPct1D', 'apyPct7D', 'apyPct30D', 'mu', 'sigma', 'count', 'il7d', 'apyBase7d', 'apyMean30d', 'volumeUsd1d', 'volumeUsd7d', 'apyBaseInception'];
         const booleanFields = ['stablecoin', 'outlier'];
         
-        if (numericFields.includes(field)) {
+        const fieldName = typeof field === 'string' ? field : String(field);
+        
+        if (numericFields.includes(fieldName)) {
           const num = parseFloat(value);
           return isNaN(num) ? 0 : num;
         }
         
-        if (booleanFields.includes(field)) {
+        if (booleanFields.includes(fieldName)) {
           return value.toLowerCase() === 'true';
         }
         
