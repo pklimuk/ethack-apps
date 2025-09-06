@@ -6,6 +6,8 @@
 - Vadzim Tsitko
 - Anton Masiukevich
 
+## Link to base app - [here](https://wallet.coinbase.com/post/0x3b785eec5e8f3d5f8db4025e041137e3b9462ed0)
+
 ## What we're building
 LP Yield Dashboard — Compare historical performance of liquidity pools across multiple protocols for better investment decisions
 
