@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'tvlUsd';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    const filePath = join(process.cwd(), 'public', 'data', 'defi_llama_pools.csv');
+    const filePath = join(process.cwd(), 'public', 'data', 'defi_llama_pools_by_tvl.csv');
     const csvData = await readFile(filePath, 'utf8');
 
     const parsed = Papa.parse(csvData, {

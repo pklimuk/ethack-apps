@@ -6,11 +6,7 @@ import PoolsComparison from './PoolsComparison';
 import { PoolData } from '../api/pools/route';
 import { Button } from './DemoComponents';
 
-interface PoolsDashboardProps {
-  setActiveTab: (tab: string) => void;
-}
-
-export default function PoolsDashboard({ setActiveTab }: PoolsDashboardProps) {
+export default function PoolsDashboard() {
   const [selectedPools, setSelectedPools] = useState<PoolData[]>([]);
   const [showComparison, setShowComparison] = useState(false);
 
@@ -159,15 +155,8 @@ export default function PoolsDashboard({ setActiveTab }: PoolsDashboardProps) {
       />
 
       {/* Footer */}
-      <div className="text-center py-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setActiveTab('home')}
-          className="text-gray-500"
-        >
-          ← Back to Home
-        </Button>
+      <div className="text-center py-4 text-gray-500 text-sm">
+        <p>Powered by DeFi Llama API • Built with MiniKit</p>
       </div>
     </div>
   );
