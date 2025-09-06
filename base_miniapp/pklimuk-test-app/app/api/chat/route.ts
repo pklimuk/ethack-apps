@@ -141,7 +141,7 @@ Be conversational and helpful. Format numbers nicely (use commas, abbreviations 
 
     // Create chat completion
     const completion = await openai.chat.completions.create({
-      model: 'gpt-5-mini', // or 'gpt-4' if available
+      model: 'gpt-4o-mini', // or 'gpt-4' if available
       messages: [
         { role: 'system', content: systemPrompt },
         ...messages
