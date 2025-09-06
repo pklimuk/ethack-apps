@@ -236,3 +236,5 @@ __marimo__/
 *.xlsx
 */.DS_Store
 scraper/exports/
+.DS_Store
+*.csv
