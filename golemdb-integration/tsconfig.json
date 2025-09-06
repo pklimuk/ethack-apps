@@ -10,7 +10,10 @@
     "types": ["node"]
   },
   "ts-node": {
-    "esm": false
+    "esm": false,
+    "compilerOptions": {
+      "skipLibCheck": true
+    }
   },
   "include": ["*.ts"],
   "exclude": ["node_modules"]
