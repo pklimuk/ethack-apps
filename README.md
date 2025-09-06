@@ -1,5 +1,11 @@
 # LP Yield Dashboard — Hackathon Demo
 
+## Team members
+- Oleg Suvorov
+- Pavel Klimuk
+- Vadzim Tsitko
+- Anton Masiukevich
+
 ## What we're building
 LP Yield Dashboard — Compare historical performance of liquidity pools across multiple protocols for better investment decisions
 
