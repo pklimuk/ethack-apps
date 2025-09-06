@@ -164,12 +164,21 @@ export function Home({ setActiveTab }: HomeProps) {
         <p className="text-[var(--app-foreground-muted)] mb-4">
           This is a minimalistic Mini App built with OnchainKit components.
         </p>
-        <Button
-          onClick={() => setActiveTab("features")}
-          icon={<Icon name="arrow-right" size="sm" />}
-        >
-          Explore Features
-        </Button>
+        <div className="space-y-2">
+          <Button
+            onClick={() => setActiveTab("features")}
+            icon={<Icon name="arrow-right" size="sm" />}
+          >
+            Explore Features
+          </Button>
+          <Button
+            onClick={() => setActiveTab("pools")}
+            variant="outline"
+            icon={<Icon name="arrow-right" size="sm" />}
+          >
+            DeFi Pools Dashboard
+          </Button>
+        </div>
       </Card>
 
       <TodoList />
