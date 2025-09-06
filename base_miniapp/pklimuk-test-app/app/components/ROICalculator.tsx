@@ -75,11 +75,8 @@ export default function ROICalculator() {
   //   return data;
   // };
 
-<<<<<<< HEAD
-  const chartData = generateChartData();
-=======
+
   // const chartData = generateChartData();
->>>>>>> 1876a73b6d219d75358af4699d606e368cb59e03
   // const maxAmount = chartData.length > 0 ? Math.max(...chartData.map(d => d.amount)) : 0;
 
   const formatCurrency = (amount: number) => {
