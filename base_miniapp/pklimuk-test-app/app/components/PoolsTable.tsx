@@ -160,6 +160,20 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
           </span>
         ),
       }),
+      columnHelper.display({
+        id: 'buy',
+        header: 'Buy',
+        cell: () => (
+          <a
+            href="https://www.curve.finance/dex/ethereum/pools/3pool/deposit?affiliate=defilpmonitoring"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
+          >
+            Buy
+          </a>
+        ),
+      }),
     ],
     [data, selectedRows, maxSelection, onSelectionChange]
   );
