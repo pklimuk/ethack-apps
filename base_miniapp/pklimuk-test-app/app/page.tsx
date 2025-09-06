@@ -85,7 +85,7 @@ export default function App() {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-4">
                 <h3 className="text-lg font-semibold text-blue-900 mb-2">Coming Soon!</h3>
                 <p className="text-blue-700 text-sm">
-                  We are working on smart notifications to alert you about:
+                  We&apos;re working on smart notifications to alert you about:
                 </p>
                 <ul className="text-left text-blue-700 text-sm mt-3 space-y-1">
                   <li>• Significant APY changes</li>
