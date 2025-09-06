@@ -76,7 +76,7 @@ export default function PoolsDashboard() {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="text-sm text-blue-800">
-              <span className="font-medium">{selectedPools.length} pool{selectedPools.length !== 1 ? 's' : ''} selected</span>
+              <span className="font-medium">{selectedPools.length}/3 pools selected</span>
               <span className="ml-2 text-blue-600">
                 ({selectedPools.map(p => p.symbol).join(', ')})
               </span>
@@ -101,28 +101,6 @@ export default function PoolsDashboard() {
           </div>
         </div>
       )}
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-sm font-medium text-gray-500">Total Pools</div>
-          <div className="text-2xl font-bold text-gray-900">19K+</div>
-          <div className="text-xs text-gray-500 mt-1">Across all chains</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-sm font-medium text-gray-500">Chains Supported</div>
-          <div className="text-2xl font-bold text-blue-600">20+</div>
-          <div className="text-xs text-gray-500 mt-1">Major blockchain networks</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="text-sm font-medium text-gray-500">Selected Pools</div>
-          <div className="text-2xl font-bold text-purple-600">{selectedPools.length}/3</div>
-          <div className="text-xs text-gray-500 mt-1">For comparison</div>
-        </div>
-
-      </div>
 
       {/* Main Table */}
       <PoolsTable

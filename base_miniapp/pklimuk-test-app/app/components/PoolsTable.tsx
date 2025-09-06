@@ -79,8 +79,9 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
 
   const formatPercent = (num: number | null | undefined) => {
     if (num === null || num === undefined || isNaN(num)) return '-';
-    return `${num.toFixed(2)}%`;
+    return `${num.toFixed(5)}%`;
   };
+
 
   const columns = useMemo(
     () => [
@@ -148,6 +149,14 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
         cell: info => (
           <span className="font-mono text-blue-600 font-semibold">
             {formatPercent(info.getValue())}
+          </span>
+        ),
+      }),
+      columnHelper.accessor('volumeUsd1d', {
+        header: '24h Volume',
+        cell: info => (
+          <span className="font-mono text-orange-600 font-semibold">
+            {formatNumber(info.getValue())}
           </span>
         ),
       }),
@@ -230,7 +239,7 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
       {/* Stats */}
       <div className="flex flex-wrap gap-4 text-sm text-gray-600">
         <span>Total Pools: {totalCount.toLocaleString()}</span>
-        <span>Selected: {selectedRows.size}/{maxSelection}</span>
+        {/* <span>Selected: {selectedRows.size}/{maxSelection}</span> */}
         <span>Page: {page}/{totalPages}</span>
       </div>
 
