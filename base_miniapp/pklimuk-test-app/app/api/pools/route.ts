@@ -46,13 +46,26 @@ export async function GET(request: NextRequest) {
     let csvData: string;
     
     if (process.env.NODE_ENV === 'production') {
-      // In production (Vercel), fetch from the deployed URL
-      const csvUrl = `${process.env.NEXT_PUBLIC_URL}/data/defi_llama_pools_by_tvl.csv`;
-      const response = await fetch(csvUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+      // In production (Vercel), try multiple approaches
+      try {
+        // First try the public URL
+        const csvUrl = `${process.env.NEXT_PUBLIC_URL}/data/defi_llama_pools_by_tvl.csv`;
+        const response = await fetch(csvUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch CSV from URL: ${response.statusText}`);
+        }
+        csvData = await response.text();
+      } catch (urlError) {
+        // Fallback: try reading from filesystem (Vercel sometimes supports this)
+        try {
+          const { readFile } = await import('fs/promises');
+          const { join } = await import('path');
+          const filePath = join(process.cwd(), 'public', 'data', 'defi_llama_pools_by_tvl.csv');
+          csvData = await readFile(filePath, 'utf8');
+        } catch (fsError) {
+          throw new Error(`Failed to load CSV file. URL error: ${urlError}. FS error: ${fsError}`);
+        }
       }
-      csvData = await response.text();
     } else {
       // In development, read from filesystem
       const { readFile } = await import('fs/promises');
