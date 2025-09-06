@@ -8,6 +8,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, Icon } from "./components/DemoComponents";
 import PoolsDashboard from "./components/PoolsDashboard";
+import ChatWidget from "./components/ChatWidget";
 
 export default function App() {
   const { setFrameReady, isFrameReady, context } = useMiniKit();
@@ -79,6 +80,9 @@ export default function App() {
           </Button>
         </footer>
       </div>
+      
+      {/* Floating AI Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }
