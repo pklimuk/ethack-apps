@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Papa from 'papaparse';
+import { getPoolsFromGolemDB } from './golem-client';
 
 export interface PoolData {
   chain: string;
@@ -32,6 +33,11 @@ export interface PoolData {
   apyBaseInception: number;
 }
 
+const NUM_POOLS = 427;
+function loads_fully(golemPools: PoolData[] | null): boolean {
+  return golemPools !== null && golemPools.length > 0 && golemPools.length === NUM_POOLS;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -43,66 +49,84 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'tvlUsd';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    let csvData: string;
+    let allPools: PoolData[];
+
+    // Try GolemDB first
+    console.log("Attempting to fetch data from GolemDB...");
+    const golemPools = await getPoolsFromGolemDB();
     
-    if (process.env.NODE_ENV === 'production') {
-      // In production (Vercel), try multiple approaches
-      try {
-        // First try the public URL
-        const csvUrl = `${process.env.NEXT_PUBLIC_URL}/defi_llama_pools_by_tvl.png`;
-        const response = await fetch(csvUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch CSV from URL: ${response.statusText}`);
-        }
-        csvData = await response.text();
-      } catch (urlError) {
-        // Fallback: try reading from filesystem (Vercel sometimes supports this)
-        try {
-          const { readFile } = await import('fs/promises');
-          const { join } = await import('path');
-          const filePath = join(process.cwd(), 'public', 'defi_llama_pools_by_tvl.png');
-          csvData = await readFile(filePath, 'utf8');
-        } catch (fsError) {
-          throw new Error(`Failed to load CSV file. URL error: ${urlError}. FS error: ${fsError}`);
-        }
-      }
+    if (loads_fully(golemPools)) {
+      console.log(`Using data from GolemDB: ${golemPools!.length} pools`);
+      allPools = golemPools!;
     } else {
-      // In development, read from filesystem
-      const { readFile } = await import('fs/promises');
-      const { join } = await import('path');
-      const filePath = join(process.cwd(), 'public', 'defi_llama_pools_by_tvl.png');
-      csvData = await readFile(filePath, 'utf8');
-    }
-
-    const parsed = Papa.parse(csvData, {
-      header: true,
-      skipEmptyLines: true,
-      transformHeader: (header) => header.trim(),
-      transform: (value, field) => {
-        // Parse numeric fields
-        const numericFields = ['tvlUsd', 'apyBase', 'apyReward', 'apy', 'apyPct1D', 'apyPct7D', 'apyPct30D', 'mu', 'sigma', 'count', 'il7d', 'apyBase7d', 'apyMean30d', 'volumeUsd1d', 'volumeUsd7d', 'apyBaseInception'];
-        const booleanFields = ['stablecoin', 'outlier'];
-        
-        const fieldName = typeof field === 'string' ? field : String(field);
-        
-        if (numericFields.includes(fieldName)) {
-          const num = parseFloat(value);
-          return isNaN(num) ? 0 : num;
+      // Fallback to CSV
+      console.log("GolemDB data not available, falling back to CSV...");
+      
+      let csvData: string;
+      
+      if (process.env.NODE_ENV === 'production') {
+        // In production (Vercel), try multiple approaches
+        try {
+          // First try the public URL
+          const csvUrl = `${process.env.NEXT_PUBLIC_URL}/defi_llama_pools_by_tvl.png`;
+          const response = await fetch(csvUrl);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch CSV from URL: ${response.statusText}`);
+          }
+          csvData = await response.text();
+        } catch (urlError) {
+          // Fallback: try reading from filesystem (Vercel sometimes supports this)
+          try {
+            const { readFile } = await import('fs/promises');
+            const { join } = await import('path');
+            const filePath = join(process.cwd(), 'public', 'defi_llama_pools_by_tvl.png');
+            csvData = await readFile(filePath, 'utf8');
+          } catch (fsError) {
+            throw new Error(`Failed to load CSV file. URL error: ${urlError}. FS error: ${fsError}`);
+          }
         }
-        
-        if (booleanFields.includes(fieldName)) {
-          return value.toLowerCase() === 'true';
-        }
-        
-        return value || '';
+      } else {
+        // In development, read from filesystem
+        const { readFile } = await import('fs/promises');
+        const { join } = await import('path');
+        const filePath = join(process.cwd(), 'public', 'defi_llama_pools_by_tvl.png');
+        csvData = await readFile(filePath, 'utf8');
       }
-    });
 
-    if (parsed.errors && parsed.errors.length > 0) {
-      console.error('CSV parsing errors:', parsed.errors);
+      const parsed = Papa.parse(csvData, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: (header) => header.trim(),
+        transform: (value, field) => {
+          // Parse numeric fields
+          const numericFields = ['tvlUsd', 'apyBase', 'apyReward', 'apy', 'apyPct1D', 'apyPct7D', 'apyPct30D', 'mu', 'sigma', 'count', 'il7d', 'apyBase7d', 'apyMean30d', 'volumeUsd1d', 'volumeUsd7d', 'apyBaseInception'];
+          const booleanFields = ['stablecoin', 'outlier'];
+          
+          const fieldName = typeof field === 'string' ? field : String(field);
+          
+          if (numericFields.includes(fieldName)) {
+            const num = parseFloat(value);
+            return isNaN(num) ? 0 : num;
+          }
+          
+          if (booleanFields.includes(fieldName)) {
+            return value.toLowerCase() === 'true';
+          }
+          
+          return value || '';
+        }
+      });
+
+      if (parsed.errors && parsed.errors.length > 0) {
+        console.error('CSV parsing errors:', parsed.errors);
+      }
+
+      allPools = parsed.data as PoolData[];
+      console.log(`Using data from CSV: ${allPools.length} pools`);
     }
 
-    let pools = parsed.data as PoolData[];
+    // Start with all pools for filtering
+    let pools = [...allPools];
 
     // Filter by search term
     if (search) {
@@ -144,8 +168,7 @@ export async function GET(request: NextRequest) {
     const endIndex = startIndex + limit;
     const paginatedPools = pools.slice(startIndex, endIndex);
 
-    // Get unique values for filters
-    const allPools = parsed.data as PoolData[];
+    // Get unique values for filters from all pools (before filtering)
     const uniqueChains = [...new Set(allPools.map(p => p.chain))].filter(Boolean).sort();
     const uniqueProjects = [...new Set(allPools.map(p => p.project))].filter(Boolean).sort();
 
