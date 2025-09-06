@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Papa from 'papaparse';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 
 export interface PoolData {
   chain: string;
@@ -45,8 +43,23 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get('sortBy') || 'tvlUsd';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    const filePath = join(process.cwd(), 'public', 'data', 'defi_llama_pools_by_tvl.csv');
-    const csvData = await readFile(filePath, 'utf8');
+    let csvData: string;
+    
+    if (process.env.NODE_ENV === 'production') {
+      // In production (Vercel), fetch from the deployed URL
+      const csvUrl = `${process.env.NEXT_PUBLIC_URL}/data/defi_llama_pools_by_tvl.csv`;
+      const response = await fetch(csvUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+      }
+      csvData = await response.text();
+    } else {
+      // In development, read from filesystem
+      const { readFile } = await import('fs/promises');
+      const { join } = await import('path');
+      const filePath = join(process.cwd(), 'public', 'data', 'defi_llama_pools_by_tvl.csv');
+      csvData = await readFile(filePath, 'utf8');
+    }
 
     const parsed = Papa.parse(csvData, {
       header: true,
