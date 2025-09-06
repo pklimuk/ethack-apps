@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
+import { useOpenUrl } from "@coinbase/onchainkit/minikit";
 import {
   useReactTable,
   getCoreRowModel,
@@ -32,6 +33,8 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  
+  const openUrl = useOpenUrl();
 
   const limit = 100;
 
@@ -164,14 +167,12 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
         id: 'buy',
         header: 'Buy',
         cell: () => (
-          <a
-            href="https://www.curve.finance/dex/ethereum/pools/3pool/deposit?affiliate=defilpmonitoring"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => openUrl('https://www.curve.finance/dex/ethereum/pools/3pool/deposit?affiliate=defilpmonitoring')}
             className="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
           >
             Buy
-          </a>
+          </button>
         ),
       }),
     ],
