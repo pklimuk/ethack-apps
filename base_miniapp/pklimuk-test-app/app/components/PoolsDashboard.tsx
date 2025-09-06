@@ -6,7 +6,11 @@ import { Button } from './DemoComponents';
 import PoolsComparison from './PoolsComparison';
 import PoolsTable from './PoolsTable';
 
-export default function PoolsDashboard() {
+interface PoolsDashboardProps {
+  onSwitchToCompare?: () => void;
+}
+
+export default function PoolsDashboard({ onSwitchToCompare }: PoolsDashboardProps) {
   const [selectedPools, setSelectedPools] = useState<PoolData[]>([]);
   const [showComparison, setShowComparison] = useState(false);
 
@@ -16,7 +20,30 @@ export default function PoolsDashboard() {
 
   const handleCompare = () => {
     if (selectedPools.length > 0) {
-      setShowComparison(true);
+      // Save to comparison history
+      const comparison = {
+        id: Date.now().toString(),
+        title: `${selectedPools.map(p => p.symbol).join(' vs ')} Comparison`,
+        pools: selectedPools,
+        timestamp: Date.now()
+      };
+
+      try {
+        const saved = localStorage.getItem('poolComparisons');
+        const history = saved ? JSON.parse(saved) : [];
+        const updated = [comparison, ...history]; // Add to beginning
+        localStorage.setItem('poolComparisons', JSON.stringify(updated));
+      } catch (error) {
+        console.error('Failed to save comparison:', error);
+      }
+
+      // Switch to compare tab if callback is provided
+      if (onSwitchToCompare) {
+        onSwitchToCompare();
+      } else {
+        // Fallback to local comparison view if no tab switch callback
+        setShowComparison(true);
+      }
     }
   };
 

@@ -9,11 +9,26 @@ interface Message {
   timestamp: number;
 }
 
-export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+interface ChatWidgetProps {
+  externalOpen?: boolean;
+  onExternalOpenChange?: (open: boolean) => void;
+}
+
+export default function ChatWidget({ externalOpen, onExternalOpenChange }: ChatWidgetProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Use external control if provided, otherwise use internal state
+  const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setIsOpen = (open: boolean) => {
+    if (onExternalOpenChange) {
+      onExternalOpenChange(open);
+    } else {
+      setInternalOpen(open);
+    }
+  };
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
