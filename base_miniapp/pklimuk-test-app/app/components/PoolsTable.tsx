@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useOpenUrl } from "@coinbase/onchainkit/minikit";
+import { CheckSquare, HelpCircle, ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -88,9 +89,10 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
 
   const columns = useMemo(
     () => [
+      // Checkbox column
       columnHelper.display({
         id: 'select',
-        header: 'Select',
+        header: () => <CheckSquare size={16} className="text-gray-500" />,
         cell: ({ row }) => (
           <input
             type="checkbox"
@@ -115,6 +117,72 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
         ),
         enableSorting: false,
       }),
+      // Pool column (renamed from Project)
+      columnHelper.accessor('project', {
+        header: 'Pool',
+        cell: info => (
+          <span className="font-medium text-gray-900">
+            {info.getValue()}
+          </span>
+        ),
+      }),
+      // Advertised APY column (renamed from APY)
+      columnHelper.accessor('apy', {
+        header: 'Advertised APY',
+        cell: info => (
+          <span className="font-mono text-blue-600 font-semibold">
+            {formatPercent(info.getValue())}
+          </span>
+        ),
+      }),
+      // Historic APY column (new, no data)
+      columnHelper.display({
+        id: 'historicApy',
+        header: 'Historic APY (90d)',
+        cell: () => (
+          <span className="text-gray-400 text-sm italic">
+            Soon
+          </span>
+        ),
+        enableSorting: false,
+      }),
+      // Net Yield column (new, with tooltip)
+      columnHelper.display({
+        id: 'netYield',
+        header: () => (
+          <div className="flex items-center space-x-1">
+            <span>Net Yield (ILAY)</span>
+            <div className="relative group">
+              <HelpCircle size={14} className="text-gray-400 hover:text-gray-600 cursor-help" />
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 p-3 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-[60]">
+                <div className="mb-2">
+                  <strong>Advertised APY: 18%</strong> — the protocol promised 18% based on fees and incentives.
+                </div>
+                <div>
+                  <strong>Realized IL-adjusted APY: 10%</strong> — your actual return considering price changes of assets in the pool.
+                </div>
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-l-transparent border-r-transparent border-b-gray-900"></div>
+              </div>
+            </div>
+          </div>
+        ),
+        cell: () => (
+          <span className="text-gray-400 text-sm italic">
+            Soon
+          </span>
+        ),
+        enableSorting: false,
+      }),
+      // TVL column (renamed from TVL (USD))
+      columnHelper.accessor('tvlUsd', {
+        header: 'TVL',
+        cell: info => (
+          <span className="font-mono text-green-600 font-semibold">
+            {formatNumber(info.getValue())}
+          </span>
+        ),
+      }),
+      // Chain column
       columnHelper.accessor('chain', {
         header: 'Chain',
         cell: info => (
@@ -123,46 +191,7 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
           </span>
         ),
       }),
-      columnHelper.accessor('project', {
-        header: 'Project',
-        cell: info => (
-          <span className="font-medium text-gray-900">
-            {info.getValue()}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('symbol', {
-        header: 'Symbol',
-        cell: info => (
-          <span className="font-mono text-sm bg-gray-50 px-2 py-1 rounded">
-            {info.getValue()}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('tvlUsd', {
-        header: 'TVL (USD)',
-        cell: info => (
-          <span className="font-mono text-green-600 font-semibold">
-            {formatNumber(info.getValue())}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('apy', {
-        header: 'APY',
-        cell: info => (
-          <span className="font-mono text-blue-600 font-semibold">
-            {formatPercent(info.getValue())}
-          </span>
-        ),
-      }),
-      columnHelper.accessor('volumeUsd1d', {
-        header: '24h Volume',
-        cell: info => (
-          <span className="font-mono text-orange-600 font-semibold">
-            {formatNumber(info.getValue())}
-          </span>
-        ),
-      }),
+      // Buy column
       columnHelper.display({
         id: 'buy',
         header: 'Buy',
@@ -176,7 +205,7 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
         ),
       }),
     ],
-    [data, selectedRows, maxSelection, onSelectionChange]
+    [data, selectedRows, maxSelection, onSelectionChange, openUrl]
   );
 
   const table = useReactTable({
@@ -284,11 +313,11 @@ export default function PoolsTable({ onSelectionChange, maxSelection = 3 }: Pool
                               header.getContext()
                             )}
                             {header.column.getCanSort() && (
-                              <span className="text-gray-400">
+                              <span className="text-gray-400 ml-1">
                                 {{
-                                  asc: ' ↑',
-                                  desc: ' ↓',
-                                }[header.column.getIsSorted() as string] ?? ' ↕️'}
+                                  asc: <ChevronUp size={14} />,
+                                  desc: <ChevronDown size={14} />,
+                                }[header.column.getIsSorted() as string] ?? <ChevronsUpDown size={14} />}
                               </span>
                             )}
                           </div>
